@@ -1,13 +1,24 @@
-import React, {useState} from 'react';
-import {Box, Button, CircularProgress} from "@mui/material";
+import React, {useState, useMemo} from 'react';
+import {Box, Button, CircularProgress, ToggleButton, ToggleButtonGroup} from "@mui/material";
 import useAccommodations from "../../../hooks/useAccommodations.js";
 import AccommodationsGrid from "../../components/accommodations/accommodationsGrid/AccommodationsGrid.jsx";
 import AddAccommodationDialog from "../../components/accommodations/addAccommodationDialog/AddAccommodationDialog.jsx";
-
+import CategoryFilter from "../../components/accommodations/accommodationsFilter/AccommodationsFilter.jsx";
 
 const AccommodationsPage = () => {
     const {accommodations, loading, onAdd, onEdit, onDelete} = useAccommodations();
     const [addAccommodationDialogOpen, setAddAccommodationDialogOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+
+    const categories = useMemo(() => {
+        const allCategories = accommodations.map(acc => acc.category);
+        return [...new Set(allCategories)];
+    }, [accommodations]);
+
+    const filteredAccommodations = useMemo(() => {
+        if (!selectedCategory) return accommodations;
+        return accommodations.filter(a => a.category === selectedCategory);
+    }, [accommodations, selectedCategory]);
 
     return (
         <>
@@ -19,13 +30,19 @@ const AccommodationsPage = () => {
                 )}
                 {!loading &&
                     <>
-                        <Box sx={{display: "flex", justifyContent: "flex-end", mb: 2}}>
+                        <Box sx={{display: "flex", justifyContent: "space-between", mb: 2}}>
+                            <CategoryFilter
+                                categories={categories}
+                                selectedCategory={selectedCategory}
+                                setSelectedCategory={setSelectedCategory}
+                            />
+
                             <Button variant="contained" color="primary"
                                     onClick={() => setAddAccommodationDialogOpen(true)}>
                                 Add Accommodation
                             </Button>
                         </Box>
-                        <AccommodationsGrid accommodations={accommodations} onEdit={onEdit} onDelete={onDelete}/>
+                        <AccommodationsGrid accommodations={filteredAccommodations} onEdit={onEdit} onDelete={onDelete}/>
                     </>}
             </Box>
             <AddAccommodationDialog

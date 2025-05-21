@@ -61,7 +61,7 @@ const EditAccommodationDialog = ({open, onClose, accommodation, onEdit}) => {
                     </Select>
                 </FormControl>
                 <FormControl fullWidth margin="dense">
-                    <InputLabel>Manufacturer</InputLabel>
+                    <InputLabel>Host</InputLabel>
                     <Select
                         name="host"
                         value={formData.host}
@@ -73,6 +73,14 @@ const EditAccommodationDialog = ({open, onClose, accommodation, onEdit}) => {
                         ))}
                     </Select>
                 </FormControl>
+                <TextField
+                    margin="dense"
+                    label="Number of rooms"
+                    name="numRooms"
+                    value={formData.numRooms}
+                    onChange={handleChange}
+                    fullWidth
+                />
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
